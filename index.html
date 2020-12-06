@@ -1,0 +1,187 @@
+<html>
+<header>
+    <title></title>
+</header>
+
+<style>
+/* Float four columns side by side */
+.column {
+	box-sizing: border-box;
+  	border: 1px solid #ddd;
+  	display: inline-block;
+ 	width: 150px;
+	position: relative;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {
+	width: 100%;
+  	text-align: center;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding-bottom: 10px;
+
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: white;
+}
+
+div .column{
+
+  background: red;
+  position: relative;
+}
+
+@keyframes myfirst {
+	0%   {background: red; left: 0px;}
+	100%  {background: yellow; left: 200px;}
+}
+
+</style>
+
+<body>
+
+	<div class="row">
+		<div class="column">
+		  <div class="card">
+			<h3>Card 1</h3>
+			<p>Some text</p>
+			<p>Some text</p>
+		  </div>
+		</div>
+	  
+		<div class="column">
+		  <div class="card">
+			<h3>Card 2</h3>
+			<p>Some text</p>
+			<p>Some text</p>
+		  </div>
+		</div>
+		
+		<div class="column">
+		  <div class="card">
+			<h3>Card 3</h3>
+			<p>Some text</p>
+			<p>Some text</p>
+		  </div>
+		</div>
+		
+		<div class="column">
+		  <div class="card">
+			<h3>Card 4</h3>
+			<p>Some text</p>
+			<p>Some text</p>
+		  </div>
+		</div>
+		<div class="column">
+			<div class="card">
+			  <h3>Card 5</h3>
+			  <p>Some text</p>
+			  <p>Some text</p>
+			</div>
+		  </div>
+		  <div class="column">
+			<div class="card">
+			  <h3>Card 6</h3>
+			  <p>Some text</p>
+			  <p>Some text</p>
+			</div>
+		  </div>
+		  <div class="column">
+			<div class="card">
+			  <h3>Card 7</h3>
+			  <p>Some text</p>
+			  <p>Some text</p>
+			</div>
+		  </div>
+	  </div>
+<script>
+
+let key;
+
+window.onload =  init;
+let url;
+
+function init(){
+
+	console.log(test());
+
+
+
+}//end of init
+
+function test(){
+
+	key = 'd55f0e68732ef86779d5a71799a5e5f5';
+	
+	let arr = [[33.441792, -94.037689] , [42.9981, -78.1875]];
+
+		fetch(getWeatherLocationUrl(arr[0][0], arr[1][1]))
+		.then(function(resp){return resp.json();  })
+		.then(function(data){
+
+			console.log(getWeatherIcon(data.current.weather[0].icon));
+			return getWeatherIcon(data.current.weather[0].icon);
+		//	let url = getWeatherIcon(data.daily[0].weather[0].icon);
+
+		}).catch(function(){
+
+		});
+}
+
+function getWeatherIcon(icon){
+
+	let url = "http://openweathermap.org/img/wn/";
+	url += icon;
+	url += "@2x.png";
+	return url;
+
+}
+
+function getWeatherLocationUrl(lat, long){
+
+	lat = lat.toString();
+	long = long.toString();
+
+	let url = "https://api.openweathermap.org/data/2.5/onecall?";
+
+	url += "lat=" + lat + "&";
+	url += "lon=" + long;
+	url += "&exclude=hourly&appid=" + key;
+	return(url);
+
+}
+
+//d55f0e68732ef86779d5a71799a5e5f5
+
+
+
+</script>
+
+<p id ="test"></p>
+</body>
+
+
+</html>
