@@ -16,12 +16,17 @@
           zoom: 4
           });
           
-          map.addControl(
+          let geocoder = map.addControl(
             new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
           })
+          
           );
+          geocoder.on('results', function(results) {
+            console.log(results);
+         })
+
           map.setStyle('mapbox://styles/mapbox/light-v10');
 
           map.on('zoom', function(e){
@@ -31,6 +36,7 @@
               request.getCitiesNearLocation(center.lat, center.lng, map);
             }
           });
+
 
           request.addMarkers(map);
 
