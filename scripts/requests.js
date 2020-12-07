@@ -14,8 +14,7 @@ function getCitiesNearLocation(lat, long, map){
      
       if (this.readyState === this.DONE) {
         let data = JSON.parse(this.responseText).data;
-  
-        if(data.length == 0 || data.length == undefined){return};
+        if(data.length == 0 || data.length == undefined){return;}
   
         for(let i =0; i < data.length; i++){
          // document.querySelector("#test").innerHTML +=  JSON.parse(this.responseText).data[i].city + '<BR>';
@@ -72,20 +71,22 @@ function getCitiesNearLocation(lat, long, map){
       if (this.readyState === this.DONE) {
   
         let data = JSON.parse(this.responseText).data;
-        console.log(JSON.parse(this.responseText).data);
-  
+      //  console.log(JSON.parse(this.responseText).data);
+      //console.log(data);
+
         let lat, long, city;
   
         for(let i =0; i < data.length; i++){
          // document.querySelector("#test").innerHTML +=  JSON.parse(this.responseText).data[i].city + '<BR>';
           lat = data[i].latitude;
+
           long = data[i].longitude;
-          city = data[i].city;
+          city = data[i].city + ", " + data[i].regionCode;
           createMarker(lat, long, city, map);
   
         }
   
-      //document.body.style.backgroundImage = "url(" + img.src + ")";
+      //document.body.style.backgroundImage = "url(" + img.src + ")";x
       }
     });
   
@@ -97,14 +98,23 @@ function getCitiesNearLocation(lat, long, map){
   
   }//end of endMarkers
   
-  function createMarker(lat ,long, city, map){
+  function createMarker(lat ,long, city, map, search = false, hasIcon = false){
   
         key = 'd55f0e68732ef86779d5a71799a5e5f5';
   
         fetch(utils.getWeatherLocationUrl(lat, long, key))
         .then(function(resp){return resp.json();  })
         .then(function(data){
-  
+
+          if(search){
+  //        console.log(data);
+            let time = data.current.dt;
+            time = utils.unixToRegularTime(time);
+            utils.createCards(time, data);
+          }
+
+          if(hasIcon)return;
+
           let temp = utils.kelvinToFahrenheit(data.current.temp);
           //console.log(getWeatherIcon(data.daily[0].weather[0].icon));
           let img = new Image();
@@ -117,23 +127,51 @@ function getCitiesNearLocation(lat, long, map){
           mk.style.width = "50px";
           mk.style.height = "50px";
           mk.style.cursor = "pointer";
+          mk.dt = data;
+          mk.lat = lat;
+          mk.long = long;
+          mk.city = city;
+          mk.map = map
+          mk.addEventListener('click', function(){
+            createMarker(mk.lat, mk.long, mk.city, mk.map, true, true);
+           
+          });
           
           let marker = new mapboxgl.Marker(mk)
           .setLngLat([long, lat])
           .setPopup(new mapboxgl.Popup({offset: 25})
           .setHTML('<h3>' + city + '<h3>' + '<p>' + temp + '°F' + '<p>'))
           .addTo(map);
+
         }).catch(function(){
   
         });
+
+
       
   }//end of CreateMarker
 
-function createCol(){
+  function getCityByLatLong(lat, long){
 
-  let col = document.createElement('div');
-  col.classList.add("column").classList.add("row")
+    const data = null;
 
-}
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
-export {addMarkers,getLocalCities,getCitiesNearLocation};
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+       
+      }
+    });
+
+    xhr.open("GET", "https://wft-geo-db.p.rapidapi.com/v1/geo/cities?location=42.9981-78.1875&radius=5");
+    xhr.setRequestHeader("x-rapidapi-key", "bb598cfb45msh99ab05706963f39p158adfjsn1ed74d9a0b95");
+    xhr.setRequestHeader("x-rapidapi-host", "wft-geo-db.p.rapidapi.com");
+
+    xhr.send(data);
+
+
+  }
+
+
+export {addMarkers,getLocalCities,getCitiesNearLocation, createMarker};
