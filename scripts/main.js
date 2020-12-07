@@ -2,7 +2,7 @@
 
     /* window.onload = init;*/
     
-     var map;
+     let map;
      let geocoder;
      let results;
 
